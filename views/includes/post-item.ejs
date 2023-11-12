@@ -1,0 +1,11 @@
+<li class="post-item">
+  <article>
+    <div class="actions">
+      <a class="btn" href="/posts/<%= postId %>/edit">View & edit</a>
+      <input type="hidden" value="<%= csrfToken %>" name="_csrf" />
+      <form action="/posts/<%= postId %>/delete" method="POST">
+        <button class="btn">Delete</button>
+      </form>
+    </div>
+  </article>
+</li>

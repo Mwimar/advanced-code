@@ -1,0 +1,12 @@
+<head>
+  <%- include('includes/head') %>
+</head>
+<body>
+  <%- include('includes/header') %>
+
+  <main>
+    <%- include('includes/post-form', { submitUrl:'/posts/'+ postId + 'edit',
+    hasError:inputData.hasError, errorMessage:inputData.message,
+    title:inputData.title, content:inputData.content }) %>
+  </main>
+</body>

@@ -73,8 +73,21 @@ router.get("/admin", function (req, res) {
   res.render("admin");
 });
 
-router.get("/logout", function (req, res) {
-  res.redirect("/login");
+router.get("/admin", function (req, res) {
+  res.render("admin");
+});
+
+router.post("/admin/posts", async function (req, res) {
+  const user = req.body;
+  const enteredTitle = user.title;
+  const enteredContent = user.content;
+
+  const post = {
+    title: enteredTitle,
+    content: enteredContent,
+  };
+  await db.getDb().collection("posts").insertOne(post);
+  res.redirect("/admin");
 });
 
 module.exports = router;
