@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('includes/head') %>
+    <title>Login</title>
+  </head>
+  <body>
+    <%- include('includes/header') %>
+    <main>
+      <section>
+        <h1>Login</h1>
+        <form action="/login" method="POST">
+          <div class="form-control">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="email" />
+          </div>
+          <div class="form-control">
+            <label for="password">Your Password</label>
+            <input type="password" id="password" name="password" />
+          </div>
+          <button class="btn">login</button>
+        </form>
+        <p>
+          Don't Have an account? <a class="btn-alt" href="/signup">Sign Up</a>
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
