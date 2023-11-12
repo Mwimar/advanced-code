@@ -22,16 +22,16 @@ router.post("/signup", async function (req, res) {
   const enteredEmail = user.email;
   const enteredConfirmEmail = user.confirmemail;
   const enteredPassword = user.password;
-  const hashedPassword = await bcrypt.hash(password, 12);
+  const hashedPassword = await bcrypt.hash(enteredPassword, 12);
 
   if (
     !enteredEmail ||
     !enteredConfirmEmail ||
-    email !== enteredConfirmEmail ||
+    enteredEmail !== enteredConfirmEmail ||
     !enteredPassword ||
     enteredPassword.trim() < 6
   ) {
-    req.session.userData = {
+    req.session.inputData = {
       hasError: true,
       message: "Invalid User Data",
       email: enteredEmail,
@@ -44,15 +44,25 @@ router.post("/signup", async function (req, res) {
     });
   }
 
-  const existingUser = db
+  const existingUser = await db
     .getDb()
     .collection("users")
     .findOne({ email: enteredEmail });
 
-  const userData = {
-    email: email,
+  if (existingUser) {
+    console.log(existingUser);
+    console.log("User Exists");
+    return res.redirect("/signup");
+  }
+
+  const userInfo = {
+    email: enteredEmail,
     password: hashedPassword,
   };
+
+  await db.getDb().collection("users").insertOne(userInfo);
+
+  res.redirect("/login");
 });
 
 router.get("/login", function (req, res) {

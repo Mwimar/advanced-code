@@ -1,19 +1,25 @@
 form{
-    background-color: rgb(142, 172, 172);
+    background-color: rgb(72, 158, 158);
     border-radius:5px;
     margin:1rem 1rem;
     padding:1rem 1rem;
     color: rgb(49, 49, 49);
+    text-align:center;
 }
 .form-control{
     margin:1rem 0;
 }
 
-input, label{
+input, label, textarea{
     display:block;
     font:inherit;
     border-radius: 5px;
+    width:100%;
+   
 
+}
+.form-control input,textarea{
+    background-color: rgb(207, 243, 243);
 }
 
 .btn{
@@ -22,6 +28,7 @@ input, label{
     margin:8px 25px;
     border-radius:5px;
     cursor:pointer;
+    font:inherit
 }
 
 .btn-alt{
