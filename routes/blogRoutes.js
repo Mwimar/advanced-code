@@ -103,11 +103,75 @@ router.get("/login", function (req, res) {
   res.render("login", { inputData: sessionInputData });
 });
 
-router.get("/admin", function (req, res) {
-  res.render("admin");
+router.post("/login", async function (req, res) {
+  const user = req.body;
+  const enteredEmail = user.email;
+  const enteredConfirmEmail = user.confirmemail;
+  const enteredPassword = user.password;
+
+  const existingUser = await db
+    .getDb()
+    .collection("users")
+    .findOne({ email: enteredEmail });
+
+  if (!existingUser) {
+    req.session.inputData = {
+      hasError: true,
+      message: " Could not log you in - please check your details",
+      email: enteredEmail,
+      password: enteredPassword,
+    };
+    req.session.save(function () {
+      res.redirect("/login");
+    });
+    return;
+  }
+
+  const passwordsAreEqual = await bcrypt.compare(
+    enteredPassword,
+    existingUser.password
+  );
+
+  if (!passwordsAreEqual) {
+    req.session.inputData = {
+      hasError: true,
+      message: " Could not log you in - please check your details",
+      email: enteredEmail,
+      password: enteredPassword,
+    };
+    req.session.save(function () {
+      res.redirect("/login");
+    });
+    return;
+  }
+
+  req.session.user = {
+    id: existingUser._id,
+    email: existingUser.email,
+  };
+  req.session.isAuthenticated = true;
+  req.session.save(function () {
+    res.redirect("/admin");
+  });
 });
 
-router.get("/admin", function (req, res) {
+router.get("/admin", async function (req, res) {
+  if (!res.locals.isAuth) {
+    return res.status(401).render("401");
+  }
+  // const posts = await db.getDb().collection("posts").toArray();
+
+  let sessionInputData = req.session.inputData;
+
+  if (!sessionInputData) {
+    sessionInputData = {
+      hasError: false,
+      title: "",
+      content: "",
+    };
+  }
+  req.session.inputData = null;
+  // res.render("admin", { posts: posts, inputData:sessionInputData });
   res.render("admin");
 });
 
@@ -120,8 +184,14 @@ router.post("/admin/posts", async function (req, res) {
     title: enteredTitle,
     content: enteredContent,
   };
-  await db.getDb().collection("posts").insertOne(post);
+  await db.getDb().collection(" posts").insertOne(post);
   res.redirect("/admin");
+});
+
+router.post("/logout", function (req, res) {
+  req.session.user = null;
+  req.session.isAuthenticated = false;
+  res.redirect("/");
 });
 
 module.exports = router;
