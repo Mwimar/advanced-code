@@ -3,6 +3,7 @@ const express = require("express");
 const mongodb = require("mongodb");
 
 const db = require("../data/database");
+const Post = require("../models/post");
 
 const ObjectId = mongodb.ObjectId;
 const router = express.Router();
@@ -40,12 +41,26 @@ router.post("/posts", async function (req, res) {
   const enteredTitle = user.title;
   const enteredContent = user.content;
 
-  const post = {
-    title: enteredTitle,
-    content: enteredContent,
-  };
-  await db.getDb().collection(" posts").insertOne(post);
-  res.redirect("/admin");
+  if (
+    !enteredTitle ||
+    !enteredContent ||
+    enteredTitle.trim() === "" ||
+    enteredContent.trim() === ""
+  ) {
+    req.session.inputData = {
+      hasError: true,
+      message: "invalid Input",
+      title: enteredTitle,
+      content: enteredContent,
+    };
+
+    return res.redirect("/admin");
+  }
+
+  const post = new Post(enteredTitle, enteredContent);
+  console.log(post);
+  await post.save();
+  return res.redirect("/admin");
 });
 
 router.get("/posts/:id/edit", async function (req, res) {
