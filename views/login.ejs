@@ -10,13 +10,27 @@
       <section>
         <h1>Login</h1>
         <form action="/login" method="POST">
+          <% if(hasError) {%>
+          <p id="input-error"><%= inputData.message %></p>
+          <% } %>
           <div class="form-control">
             <label for="email">Your Email</label>
-            <input type="email" id="email" name="email" />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value="<%= inputData.email %>"
+              required
+            />
           </div>
           <div class="form-control">
             <label for="password">Your Password</label>
-            <input type="password" id="password" name="password" />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value="<%= inputData.password %>"
+            />
           </div>
           <button class="btn">login</button>
         </form>
