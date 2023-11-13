@@ -7,7 +7,9 @@ const session = require("express-session");
 const mongodbStore = require("connect-mongodb-session");
 
 const blogRoutes = require("./routes/blogRoutes");
+const authRoutes = require("./routes/auth");
 const db = require("./data/database");
+
 const MongoDBStore = mongodbStore(session);
 
 const app = express();
@@ -49,6 +51,7 @@ app.use(async function (req, res, next) {
 });
 
 app.use(blogRoutes);
+app.use(authRoutes);
 
 app.use(function (error, req, res, next) {
   console.log(error);
