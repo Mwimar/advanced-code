@@ -4,36 +4,23 @@ const path = require("path");
 const mongodb = require("mongodb");
 const ObjectId = mongodb.ObjectId;
 const session = require("express-session");
-const mongodbStore = require("connect-mongodb-session");
 
+const sessionConfig = require("./config/session");
 const blogRoutes = require("./routes/blogRoutes");
 const authRoutes = require("./routes/auth");
 const db = require("./data/database");
 
-const MongoDBStore = mongodbStore(session);
+const mongoDbSessionStore = sessionConfig.createSessionStore(session);
 
 const app = express();
-
-const sessionStore = new MongoDBStore({
-  uri: "mongodb://localhost:27017",
-  databaseName: "advanced-code",
-  collection: "sessions",
-});
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-  session({
-    secret: "super-secret",
-    resave: false,
-    saveUninitialized: false,
-    store: sessionStore,
-  })
-);
-// app.use(csrf());
+app.use(session(sessionConfig.createSessionConfig(mongoDbSessionStore)));
+// app.use(csrf(sess));
 
 app.use(express.static("public"));
 
