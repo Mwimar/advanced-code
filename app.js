@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+// const csrf=require('')
 const mongodb = require("mongodb");
 const ObjectId = mongodb.ObjectId;
 const session = require("express-session");
@@ -30,6 +31,7 @@ app.use(
     store: sessionStore,
   })
 );
+// app.use(csrf());
 
 app.use(express.static("public"));
 
@@ -40,11 +42,6 @@ app.use(async function (req, res, next) {
   if (!user || !isAuth) {
     return next();
   }
-
-  const userDoc = db
-    .getDb()
-    .collection("users")
-    .findOne({ _id: new ObjectId(user.id) });
 
   res.locals.isAuth = isAuth;
 

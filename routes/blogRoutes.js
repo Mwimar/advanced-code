@@ -14,7 +14,19 @@ router.get("/", function (req, res) {
 });
 
 router.get("/signup", function (req, res) {
-  res.render("signup");
+  let sessionInputData = req.session.inputData;
+  if (!sessionInputData) {
+    sessionInputData = {
+      hasError: false,
+      email: "",
+      confirmEmail: "",
+      password: "",
+    };
+  }
+  req.session.inputData = null;
+  res.render("signup", {
+    inputData: sessionInputData,
+  });
 });
 
 router.post("/signup", async function (req, res) {
@@ -50,10 +62,17 @@ router.post("/signup", async function (req, res) {
     .findOne({ email: enteredEmail });
 
   if (existingUser) {
-    console.log(existingUser);
-    console.log("User Exists");
-    return res.redirect("/signup");
+    req.session.inputData = {
+      hasError: true,
+      message: "User Already exists",
+      email: enteredEmail,
+      confirmEmail: enteredConfirmEmail,
+      password: enteredPassword,
+    };
   }
+  req.session.save(function () {
+    res.redirect("/signup");
+  });
 
   const userInfo = {
     email: enteredEmail,
@@ -66,7 +85,17 @@ router.post("/signup", async function (req, res) {
 });
 
 router.get("/login", function (req, res) {
-  res.render("login");
+  let sessionInputData = req.session.inputData;
+  if (!sessionInputData) {
+    sessionInputData = {
+      hasError: false,
+      email: "",
+      confirmEmail: "",
+      password: "",
+    };
+  }
+  req.session.inputData = null;
+  res.render("login", { inputData: sessionInputData });
 });
 
 router.get("/admin", function (req, res) {
