@@ -7,6 +7,7 @@ const session = require("express-session");
 
 const sessionConfig = require("./config/session");
 const blogRoutes = require("./routes/blogRoutes");
+const authMiddleware = require("./middlewares/auth-middleware");
 const authRoutes = require("./routes/auth");
 const db = require("./data/database");
 
@@ -24,18 +25,7 @@ app.use(session(sessionConfig.createSessionConfig(mongoDbSessionStore)));
 
 app.use(express.static("public"));
 
-app.use(async function (req, res, next) {
-  const user = req.session.user;
-  const isAuth = req.session.isAuthenticated;
-
-  if (!user || !isAuth) {
-    return next();
-  }
-
-  res.locals.isAuth = isAuth;
-
-  next();
-});
+app.use(authMiddleware);
 
 app.use(blogRoutes);
 app.use(authRoutes);
