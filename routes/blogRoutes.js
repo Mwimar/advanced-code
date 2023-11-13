@@ -10,9 +10,12 @@ const ObjectId = mongodb.ObjectId;
 const router = express.Router();
 
 router.get("/", function (req, res) {
-  res.redirect("/admin");
+  res.redirect("/welcome");
 });
 
+router.get("/welcome", function (req, res) {
+  res.render("welcome");
+});
 router.get("/signup", function (req, res) {
   let sessionInputData = req.session.inputData;
   if (!sessionInputData) {
@@ -192,10 +195,6 @@ router.post("/logout", function (req, res) {
   req.session.user = null;
   req.session.isAuthenticated = false;
   res.redirect("/");
-});
-
-router.get("/401", function (req, res) {
-  res.render("401");
 });
 
 module.exports = router;
