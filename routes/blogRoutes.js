@@ -23,6 +23,7 @@ router.get("/signup", function (req, res) {
       password: "",
     };
   }
+  console.log(sessionInputData);
   req.session.inputData = null;
   res.render("signup", {
     inputData: sessionInputData,
@@ -34,14 +35,14 @@ router.post("/signup", async function (req, res) {
   const enteredEmail = user.email;
   const enteredConfirmEmail = user.confirmemail;
   const enteredPassword = user.password;
-  const hashedPassword = await bcrypt.hash(enteredPassword, 12);
 
   if (
     !enteredEmail ||
     !enteredConfirmEmail ||
     enteredEmail !== enteredConfirmEmail ||
     !enteredPassword ||
-    enteredPassword.trim() < 6
+    enteredPassword.trim().length < 6 ||
+    !enteredEmail.includes("@")
   ) {
     req.session.inputData = {
       hasError: true,
@@ -54,6 +55,7 @@ router.post("/signup", async function (req, res) {
     req.session.save(function () {
       res.redirect("/signup");
     });
+    return;
   }
 
   const existingUser = await db
@@ -69,10 +71,13 @@ router.post("/signup", async function (req, res) {
       confirmEmail: enteredConfirmEmail,
       password: enteredPassword,
     };
+    req.session.save(function () {
+      res.redirect("/signup");
+    });
+    return;
   }
-  req.session.save(function () {
-    res.redirect("/signup");
-  });
+
+  const hashedPassword = await bcrypt.hash(enteredPassword, 12);
 
   const userInfo = {
     email: enteredEmail,
