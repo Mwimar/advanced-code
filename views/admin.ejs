@@ -7,10 +7,22 @@
     <%- include('includes/header') %>
     <main>
       <h1>Admin Blog Posts</h1>
-      <%- include('includes/post-form') %>
+      <h2>Create a new Post</h2>
+      <section>
+        <%- include('includes/post-form', { submitUrl:'/posts',
+        hasError:inputData.hasError, errorMessage:inputData.message,
+        title:inputData.title, content:inputData.content }) %>
+      </section>
 
-      <section id="posts">
-        <h1>All Posts</h1>
+      <section>
+        <% if(!posts || posts.length===0) {%>
+        <p>Could not find any posts</p>
+        <% }else { %>
+        <ul id="posts-list">
+          <% for(const post of posts) {%> <%- include('includes/post-item',
+          {title:post.title, postId:post._id}) %> <% } %>
+        </ul>
+        <% } %>
       </section>
     </main>
   </body>

@@ -20,7 +20,7 @@ router.get("/admin", async function (req, res) {
   if (!res.locals.isAuth) {
     return res.status(401).render("401");
   }
-  // const posts = await db.getDb().collection("posts").toArray();
+  const posts = await db.getDb().collection("posts").find().toArray();
 
   let sessionInputData = req.session.inputData;
 
@@ -32,8 +32,7 @@ router.get("/admin", async function (req, res) {
     };
   }
   req.session.inputData = null;
-  // res.render("admin", { posts: posts, inputData:sessionInputData });
-  res.render("admin");
+  res.render("admin", { posts: posts, inputData: sessionInputData });
 });
 
 router.post("/posts", async function (req, res) {

@@ -1,6 +1,6 @@
 <form action="/posts" method="POST">
-  <% if(hasError) {%>
-  <p id="input-error"><%= errorMessage %></p>
+  <% if(hasError=true) {%>
+  <p id="input-error"><%= inputData.message %></p>
   <% } %>
   <div class="form-control">
     <label for="title">Title</label>

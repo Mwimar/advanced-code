@@ -9,7 +9,7 @@
       <section>
         <h1>Signup</h1>
         <form action="/signup" method="POST">
-          <% if(hasError) {%>
+          <% if(hasError=true) {%>
           <p id="input-error"><%= inputData.message %></p>
           <% } %>
           <div class="form-control">
