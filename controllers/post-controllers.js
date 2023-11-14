@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const validationSession = require("../util/validation-session");
 
 function getHome(req, res) {
   res.redirect("/welcome");
@@ -9,18 +10,9 @@ async function getAdmin(req, res) {
     return res.status(401).render("401");
   }
   const posts = await Post.fetchAll();
+  const sessionErrorData = validationSession.getSessionErrorData(req);
 
-  let sessionInputData = req.session.inputData;
-
-  if (!sessionInputData) {
-    sessionInputData = {
-      hasError: false,
-      title: "",
-      content: "",
-    };
-  }
-  req.session.inputData = null;
-  res.render("admin", { posts: posts, inputData: sessionInputData });
+  res.render("admin", { posts: posts, inputData: sessionErrorData });
 }
 
 async function getPosts(req, res) {
@@ -58,20 +50,11 @@ async function getSinglePost(req, res) {
     return res.render("404");
   }
 
-  let sessionInputData = req.session.inputData;
-
-  if (!sessionInputData) {
-    sessionInputData = {
-      hasError: false,
-      title: post.title,
-      content: post.content,
-    };
-  }
-  req.session.inputData = null;
+  const sessionErrorData = validationSession.getSessionErrorData(req);
 
   res.render("single-post", {
     post: post,
-    inputData: sessionInputData,
+    inputData: sessionErrorData,
   });
 }
 
