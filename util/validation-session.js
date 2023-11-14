@@ -1,16 +1,24 @@
-function getSessionErrorData(req) {
+function getSessionErrorData(req, defaultValues) {
   let sessionInputData = req.session.inputData;
   if (!sessionInputData) {
     sessionInputData = {
       hasError: false,
-      title: "",
-      content: "",
+      ...defaultValues,
     };
   }
   req.session.inputData = null;
   return sessionInputData;
 }
 
+function flashingErrorsToSession(req, data, action) {
+  req.session.inputData = {
+    hasError: true,
+    ...data,
+  };
+  req.session.save(action);
+}
+
 module.exports = {
   getSessionErrorData: getSessionErrorData,
+  flashingErrorsToSession: flashingErrorsToSession,
 };

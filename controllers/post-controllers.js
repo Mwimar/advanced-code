@@ -1,5 +1,6 @@
 const Post = require("../models/post");
 const validationSession = require("../util/validation-session");
+const validation = require("../util/validation");
 
 function getHome(req, res) {
   res.redirect("/welcome");
@@ -10,7 +11,10 @@ async function getAdmin(req, res) {
     return res.status(401).render("401");
   }
   const posts = await Post.fetchAll();
-  const sessionErrorData = validationSession.getSessionErrorData(req);
+  const sessionErrorData = validationSession.getSessionErrorData(req, {
+    title: "",
+    content: "",
+  });
 
   res.render("admin", { posts: posts, inputData: sessionErrorData });
 }
@@ -20,20 +24,15 @@ async function getPosts(req, res) {
   const enteredTitle = user.title;
   const enteredContent = user.content;
 
-  if (
-    !enteredTitle ||
-    !enteredContent ||
-    enteredTitle.trim() === "" ||
-    enteredContent.trim() === ""
-  ) {
-    req.session.inputData = {
-      hasError: true,
-      message: "invalid Input",
+  if (!validation.postIsValid(enteredTitle, enteredContent)) {
+    validationSession.flashingErrorsToSession(req, {
+      message: "invalid input- please check data",
       title: enteredTitle,
       content: enteredContent,
-    };
-
-    return res.redirect("/admin");
+    }),
+      function () {
+        return res.redirect("/admin");
+      };
   }
 
   const post = new Post(enteredTitle, enteredContent);
@@ -50,7 +49,10 @@ async function getSinglePost(req, res) {
     return res.render("404");
   }
 
-  const sessionErrorData = validationSession.getSessionErrorData(req);
+  const sessionErrorData = validationSession.getSessionErrorData(req, {
+    title: post.title,
+    content: post.content,
+  });
 
   res.render("single-post", {
     post: post,
@@ -63,20 +65,18 @@ async function updatePost(req, res) {
   const enteredContent = req.body.content;
   const postId = new ObjectId(req.params.id);
 
-  if (
-    !enteredTitle ||
-    !enteredContent ||
-    enteredTitle.trim() === "" ||
-    enteredContent.trim() === ""
-  ) {
-    req.session.inputData = {
-      hasError: true,
-      message: "invalid Input",
-      title: enteredTitle,
-      content: enteredContent,
-    };
-
-    req.redirect(`/posts/${req.params.id}/edit`);
+  if (!validation.postIsValid(enteredTitle, enteredContent)) {
+    validationSession.flashingErrorsToSession(
+      req,
+      {
+        message: "invalid input- please check data",
+        title: enteredTitle,
+        content: enteredContent,
+      },
+      function () {
+        res.redirect(`/posts/${req.params.id}/edit`);
+      }
+    );
     return;
   }
 
