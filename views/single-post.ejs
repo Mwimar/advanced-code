@@ -5,7 +5,7 @@
   <%- include('includes/header') %>
 
   <main>
-    <%- include('includes/post-form', { submitUrl:'/posts/'+ postId + 'edit',
+    <%- include('includes/post-form', { submitUrl:'/posts/'+ post.id + 'edit',
     hasError:inputData.hasError, errorMessage:inputData.message,
     title:inputData.title, content:inputData.content }) %>
   </main>
