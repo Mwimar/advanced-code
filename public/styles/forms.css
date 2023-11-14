@@ -32,8 +32,11 @@ input, label, textarea{
 }
 
 .btn-alt{
-    color:rgb(5, 190, 190);
+    color:rgb(231, 233, 233);
     text-decoration:none;
+    padding:6px 6px;
+    background-color: grey;
+    border-radius: 5px;
 }
 
 .btn-alt:hover{
@@ -41,4 +44,8 @@ input, label, textarea{
 }
 #input-error{
     color:rgb(150, 12, 12);
+}
+#posts-list{
+    background-color: brown;
+    list-style: none;
 }
