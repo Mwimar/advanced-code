@@ -2,6 +2,10 @@ const Post = require("../models/post");
 const validationSession = require("../util/validation-session");
 const validation = require("../util/validation");
 
+function get401(req, res) {
+  res.render("401");
+}
+
 function getHome(req, res) {
   res.redirect("/welcome");
 }
@@ -106,4 +110,5 @@ module.exports = {
   getSinglePost: getSinglePost,
   updatePost: updatePost,
   deletePost: deletePost,
+  get401: get401,
 };

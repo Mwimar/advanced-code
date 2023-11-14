@@ -1,6 +1,8 @@
 const express = require("express");
 const blogControllers = require("../controllers/post-controllers");
 
+const guardRoute = require("../middlewares/auth-protection");
+
 const router = express.Router();
 
 router.get("/", blogControllers.getHome);
@@ -18,5 +20,6 @@ router.get("/posts/:id/edit", blogControllers.getSinglePost);
 router.post("/posts/:id/edit", blogControllers.updatePost);
 
 router.post("/posts/:id/delete", blogControllers.deletePost);
+router.get("/401", blogControllers.get401);
 
 module.exports = router;
