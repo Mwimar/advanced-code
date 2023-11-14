@@ -27,8 +27,8 @@ app.use(express.static("public"));
 
 app.use(authMiddleware);
 
-app.use(blogRoutes);
 app.use(authRoutes);
+app.use(blogRoutes);
 
 app.use(function (error, req, res, next) {
   console.log(error);

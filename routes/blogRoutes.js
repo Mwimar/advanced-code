@@ -11,6 +11,8 @@ router.get("/welcome", function (req, res) {
   res.render("welcome");
 });
 
+// router.use(guardRoute);
+
 router.get("/admin", blogControllers.getAdmin);
 
 router.post("/posts", blogControllers.getPosts);
